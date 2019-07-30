@@ -1,5 +1,6 @@
 use nalgebra::base::dimension::{Dim as _, Dynamic, U1};
 use nalgebra::base::{VecStorage, Vector as InnerVector};
+use std::iter::FromIterator;
 
 #[derive(Debug, Clone)]
 pub struct Vector {
@@ -23,5 +24,13 @@ impl From<Vec<f64>> for Vector {
         let rows = Dynamic::from_usize(f.len());
         let inner = InnerVector::from_data(VecStorage::new(rows, U1, f));
         Self { inner }
+    }
+}
+impl FromIterator<f64> for Vector {
+    fn from_iter<T>(iter: T) -> Self
+    where
+        T: IntoIterator<Item = f64>,
+    {
+        Self::from(iter.into_iter().collect::<Vec<_>>())
     }
 }
