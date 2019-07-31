@@ -14,18 +14,18 @@ impl Matrix {
         Self { inner }
     }
 
-    pub fn new_covariance<X, K>(xs: &[X], kernel: &K) -> Self
+    pub fn covariance<X, K>(xs0: &[X], xs1: &[X], kernel: &K) -> Self
     where
         K: Kernel<X>,
     {
         let mut covariance = Vec::new();
-        for x0 in xs {
-            for x1 in xs {
+        for x0 in xs0 {
+            for x1 in xs1 {
                 // FIXME: calculate only lower triangle.
                 covariance.push(kernel.kernel(x0, x1));
             }
         }
-        Self::from_vec(xs.len(), xs.len(), covariance)
+        Self::from_vec(xs0.len(), xs1.len(), covariance)
     }
 
     pub fn from_vec(rows: usize, cols: usize, vec: Vec<f64>) -> Self {
@@ -35,6 +35,15 @@ impl Matrix {
 
     pub fn cholesky(self) -> Option<Cholesky<f64, Dynamic>> {
         Cholesky::new(self.inner)
+    }
+
+    pub fn get(&self, row: usize, col: usize) -> Option<f64> {
+        self.inner.get((row, col)).copied()
+    }
+
+    pub fn inverse(self) -> Option<Self> {
+        let inner = self.inner.try_inverse()?;
+        Some(Self { inner })
     }
 
     pub fn l(self) -> Option<Self> {
