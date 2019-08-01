@@ -6,6 +6,7 @@
 pub mod distributions;
 pub mod kernels;
 pub mod matrix;
+pub mod means;
 pub mod vector;
 
 pub trait Mean<X> {

@@ -1,7 +1,7 @@
 use crate::vector::Vector;
 use crate::Kernel;
 
-/// a.k.a., poser exponential kernel
+/// a.k.a., power exponential kernel
 #[derive(Debug)]
 pub struct GaussianKernel {
     alphas: Vector,
@@ -31,5 +31,7 @@ impl Kernel<Vector> for GaussianKernel {
     }
 }
 
-#[derive(Debug)]
-pub struct MaternKernel {}
+// TODO
+//
+// #[derive(Debug)]
+// pub struct MaternKernel {}
