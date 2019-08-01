@@ -1,4 +1,10 @@
+/// Gaussian Process.
+///
+/// # References
+///
+/// - [A Tutorial on Bayesian Optimization]: https://arxiv.org/abs/1807.02811
 pub mod distributions;
+pub mod kernels;
 pub mod matrix;
 pub mod vector;
 

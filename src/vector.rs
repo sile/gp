@@ -11,6 +11,10 @@ impl Vector {
         Self { inner }
     }
 
+    pub fn len(&self) -> usize {
+        self.inner.len()
+    }
+
     pub fn as_slice(&self) -> &[f64] {
         self.inner.as_slice()
     }
