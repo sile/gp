@@ -1,37 +1,36 @@
 use crate::vector::Vector;
-use crate::Kernel;
+use crate::{DifferentiableKernel, Kernel};
 
-/// a.k.a., power exponential kernel
+/// Isotropic RBF kernel.
 #[derive(Debug)]
-pub struct GaussianKernel {
-    alphas: Vector,
+pub struct RbfKernel {
+    length_scale: f64,
 }
-impl GaussianKernel {
-    pub fn new(alphas: Vector) -> Self {
-        Self { alphas }
+impl RbfKernel {
+    pub const fn new(length_scale: f64) -> Self {
+        Self { length_scale }
     }
+}
+impl Kernel<Vector> for RbfKernel {
+    type HyperParams = f64;
 
-    fn distance(&self, x0: &Vector, x1: &Vector) -> f64 {
-        self.alphas
+    fn kernel(&self, x0: &Vector, x1: &Vector) -> f64 {
+        let a = x0
             .as_slice()
             .iter()
-            .skip(1)
-            .zip(x0.as_slice().iter())
             .zip(x1.as_slice().iter())
-            .map(|((a, x0), x1)| a * (x0 - x1).powi(2))
-            .sum()
+            .map(|(x0, x1)| (x0 - x1).powi(2))
+            .sum::<f64>();
+        let b = 2.0 * self.length_scale.powi(2);
+        (-a / b).exp()
     }
 }
-impl Kernel<Vector> for GaussianKernel {
-    fn kernel(&self, x0: &Vector, x1: &Vector) -> f64 {
-        assert_eq!(self.alphas.len(), x0.len() + 1);
-        assert_eq!(x0.len(), x1.len());
-
-        self.alphas.as_slice()[0] * (-self.distance(x0, x1)).exp()
+impl DifferentiableKernel for RbfKernel {
+    fn partial<'a>(
+        &self,
+        x0: &'a Vector,
+        x1: &'a Vector,
+    ) -> Box<'a + Fn(Self::HyperParams) -> f64> {
+        panic!()
     }
 }
-
-// TODO
-//
-// #[derive(Debug)]
-// pub struct MaternKernel {}
