@@ -21,7 +21,7 @@ impl Prior {
     {
         let means = xs.iter().map(|x| mean.mean(x)).collect::<Vector>();
         let covariance = Matrix::covariance(xs, xs, &kernel);
-        let inner = MultivariateNormal::new(means, covariance)?;
+        let inner = MultivariateNormal::new(means, covariance).ok()?;
         Some(Self { inner })
     }
 }

@@ -1,5 +1,6 @@
 use crate::matrix::Matrix;
 use crate::vector::Vector;
+use crate::{ErrorKind, Result};
 use rand::distributions::Distribution;
 use rand::Rng;
 use rand_distr::StandardNormal;
@@ -11,9 +12,9 @@ pub struct MultivariateNormal {
     covariance_l: Matrix,
 }
 impl MultivariateNormal {
-    pub fn new(means: Vector, covariance: Matrix) -> Option<Self> {
-        let covariance_l = covariance.l()?;
-        Some(Self {
+    pub fn new(means: Vector, covariance: Matrix) -> Result<Self> {
+        let covariance_l = track_assert_some!(covariance.l(), ErrorKind::InvalidInput);
+        Ok(Self {
             means,
             covariance_l,
         })
@@ -21,7 +22,7 @@ impl MultivariateNormal {
 }
 impl Distribution<Vector> for MultivariateNormal {
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Vector {
-        let n = self.means.as_slice().len();
+        let n = self.means.len();
         let z = StandardNormal.sample_iter(rng).take(n).collect::<Vector>();
         let x = self.means.clone().into_inner()
             + self.covariance_l.clone().into_inner() * z.into_inner();
