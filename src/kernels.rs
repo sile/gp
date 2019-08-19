@@ -28,9 +28,9 @@ impl Kernel<Vector> for RbfKernel {
 impl DifferentiableKernel for RbfKernel {
     fn partial<'a>(
         &self,
-        x0: &'a Vector,
-        x1: &'a Vector,
-    ) -> Box<'a + Fn(Self::HyperParams) -> f64> {
+        _x0: &'a Vector,
+        _x1: &'a Vector,
+    ) -> Box<dyn 'a + Fn(Self::HyperParams) -> f64> {
         panic!()
     }
 }

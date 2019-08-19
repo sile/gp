@@ -24,5 +24,5 @@ pub trait Kernel<X = Vector> {
 
 pub trait DifferentiableKernel: Kernel {
     fn partial<'a>(&self, x0: &'a Vector, x1: &'a Vector)
-        -> Box<'a + Fn(Self::HyperParams) -> f64>;
+        -> Box<dyn 'a + Fn(Self::HyperParams) -> f64>;
 }
