@@ -1,6 +1,10 @@
-use crate::Mean;
+pub trait Mean<X> {
+    fn call(&self, x: &X) -> f64;
+}
 
-#[derive(Debug)]
+pub const ZERO_MEAN: ConstantMean = ConstantMean::new(0.0);
+
+#[derive(Debug, Clone, Copy)]
 pub struct ConstantMean(f64);
 impl ConstantMean {
     pub const fn new(v: f64) -> Self {
@@ -8,7 +12,7 @@ impl ConstantMean {
     }
 }
 impl<X> Mean<X> for ConstantMean {
-    fn mean(&self, _x: &X) -> f64 {
+    fn call(&self, _x: &X) -> f64 {
         self.0
     }
 }

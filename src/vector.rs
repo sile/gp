@@ -1,6 +1,10 @@
 use nalgebra::base::dimension::{Dim as _, Dynamic, U1};
 use nalgebra::base::{VecStorage, Vector as InnerVector};
 use std::iter::FromIterator;
+use std::ops;
+
+/// Column vector.
+pub type ColVec = Vector;
 
 #[derive(Debug, Clone)]
 pub struct Vector {
@@ -13,6 +17,10 @@ impl Vector {
 
     pub fn len(&self) -> usize {
         self.inner.len()
+    }
+
+    pub fn iter<'a>(&'a self) -> impl 'a + Iterator<Item = f64> {
+        self.inner.iter().copied()
     }
 
     pub fn as_slice(&self) -> &[f64] {
@@ -36,5 +44,12 @@ impl FromIterator<f64> for Vector {
         T: IntoIterator<Item = f64>,
     {
         Self::from(iter.into_iter().collect::<Vec<_>>())
+    }
+}
+impl ops::Add<ColVec> for ColVec {
+    type Output = ColVec;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        Self::new(self.into_inner() + rhs.into_inner())
     }
 }

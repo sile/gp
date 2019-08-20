@@ -6,30 +6,10 @@ use rand::Rng;
 use rand_distr;
 
 pub use self::mvn::MultivariateNormal;
+pub use self::prior::GaussianProcessPrior;
 
 mod mvn;
-
-#[derive(Debug)]
-pub struct Prior {
-    inner: MultivariateNormal,
-}
-impl Prior {
-    pub fn new<X, M, K>(xs: &[X], mean: M, kernel: K) -> Option<Self>
-    where
-        M: Mean<X>,
-        K: Kernel<X>,
-    {
-        let means = xs.iter().map(|x| mean.mean(x)).collect::<Vector>();
-        let covariance = Matrix::covariance(xs, xs, &kernel);
-        let inner = MultivariateNormal::new(means, covariance).ok()?;
-        Some(Self { inner })
-    }
-}
-impl Distribution<Vector> for Prior {
-    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Vector {
-        self.inner.sample(rng)
-    }
-}
+mod prior;
 
 #[derive(Debug)]
 pub struct Posterior {
