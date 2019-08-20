@@ -6,9 +6,11 @@ use rand::Rng;
 use rand_distr;
 
 pub use self::mvn::MultivariateNormal;
+pub use self::posterior::GaussianProcessPosterior;
 pub use self::prior::GaussianProcessPrior;
 
 mod mvn;
+mod posterior;
 mod prior;
 
 #[derive(Debug)]
