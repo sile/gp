@@ -2,6 +2,7 @@
 //!
 //! # References
 //!
+//! - [Gaussian Processes for Machine Learning]: http://gaussianprocess.org/gpml/
 //! - [A Tutorial on Bayesian Optimization]: https://arxiv.org/abs/1807.02811
 #[macro_use]
 extern crate trackable;
