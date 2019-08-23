@@ -3,8 +3,15 @@ name = "gp"
 version = "0.0.1"
 authors = ["Takeru Ohta <phjgt308@gmail.com>"]
 edition = "2018"
+description = "Gaussian Process"
+homepage = "https://github.com/sile/gp"
+repository = "https://github.com/sile/gp"
+readme = "README.md"
+license = "MIT"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[badges]
+travis-ci = {repository = "sile/gp"}
+codecov = {repository = "sile/gp"}
 
 [dependencies]
 nalgebra = "0.18"
