@@ -34,7 +34,11 @@ impl Vector {
 impl From<Vec<f64>> for Vector {
     fn from(f: Vec<f64>) -> Self {
         let rows = Dynamic::from_usize(f.len());
-        let inner = InnerVector::from_data(VecStorage::new(rows, U1, f));
+        let inner = InnerVector::from_data(VecStorage::new(
+            rows,
+            nalgebra::base::dimension::Const::<1>,
+            f,
+        ));
         Self { inner }
     }
 }
