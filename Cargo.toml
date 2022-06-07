@@ -14,10 +14,10 @@ travis-ci = {repository = "sile/gp"}
 codecov = {repository = "sile/gp"}
 
 [dependencies]
-nalgebra = "0.18"
+nalgebra = "0.31"
 rand = "0.7"
 rand_distr = "0.2"
-trackable = "0.2"
+trackable = "1"
 
 [dev-dependencies]
 structopt = "0.2"
