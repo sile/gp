@@ -1,7 +1,4 @@
 // cargo run --example prior -- --xs $(seq 1 100) --length-scale 1 | gnuplot -e 'plot "-" w l; pause 100'
-#[macro_use]
-extern crate trackable;
-
 use gp::distributions::GaussianProcessPrior;
 use gp::kernels::GaussianKernel;
 use gp::means::ZERO_MEAN;
@@ -18,11 +15,11 @@ struct Opt {
     length_scale: f64,
 }
 
-fn main() -> trackable::result::TopLevelResult {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let opt = Opt::from_args();
 
     let kernel = GaussianKernel::new(opt.length_scale);
-    let prior = track!(GaussianProcessPrior::new(&opt.xs, ZERO_MEAN, kernel))?;
+    let prior = GaussianProcessPrior::new(&opt.xs, ZERO_MEAN, kernel)?;
 
     let mut rng = rand::rng();
     let ys = prior.sample(&mut rng);

@@ -1,6 +1,6 @@
 use crate::matrix::Matrix;
 use crate::vector::ColVec;
-use crate::{ErrorKind, Result};
+use crate::{Error, Result};
 use rand::Rng;
 use rand::distr::Distribution;
 use rand_distr::StandardNormal;
@@ -13,7 +13,9 @@ pub struct MultivariateNormal {
 }
 impl MultivariateNormal {
     pub fn new(means: ColVec, covariance: Matrix) -> Result<Self> {
-        let covariance_l = track_assert_some!(covariance.l(), ErrorKind::InvalidInput);
+        let covariance_l = covariance.l().ok_or_else(|| {
+            Error::InvalidInput("covariance matrix is not positive definite".into())
+        })?;
         Ok(Self {
             means,
             covariance_l,

@@ -19,7 +19,7 @@ impl GaussianProcessPrior {
     {
         let means = xs.iter().map(|x| mean.call(x)).collect::<ColVec>();
         let covariance = Matrix::cov(xs, kernel);
-        let inner = track!(MultivariateNormal::new(means, covariance))?;
+        let inner = MultivariateNormal::new(means, covariance)?;
         Ok(Self { inner })
     }
 }

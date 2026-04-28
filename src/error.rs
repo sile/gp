@@ -1,10 +1,16 @@
-use trackable::error::{ErrorKind as TrackableErrorKind, TrackableError};
+use std::fmt;
 
-#[derive(Debug, Clone, TrackableError)]
-pub struct Error(TrackableError<ErrorKind>);
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum ErrorKind {
-    InvalidInput,
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum Error {
+    InvalidInput(String),
 }
-impl TrackableErrorKind for ErrorKind {}
+
+impl fmt::Display for Error {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::InvalidInput(msg) => write!(f, "invalid input: {msg}"),
+        }
+    }
+}
+
+impl std::error::Error for Error {}

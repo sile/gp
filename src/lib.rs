@@ -4,12 +4,9 @@
 //!
 //! - [Gaussian Processes for Machine Learning](http://gaussianprocess.org/gpml/)
 //! - [A Tutorial on Bayesian Optimization](https://arxiv.org/abs/1807.02811)
-#[macro_use]
-extern crate trackable;
-
 use self::vector::Vector;
 
-pub use self::error::{Error, ErrorKind};
+pub use self::error::Error;
 
 pub mod autograd;
 pub mod distributions;

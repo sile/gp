@@ -14,7 +14,6 @@ license = "MIT"
 nalgebra = "0.31"
 rand = "0.10"
 rand_distr = "0.6"
-trackable = "1"
 
 [dev-dependencies]
 structopt = "0.2"
