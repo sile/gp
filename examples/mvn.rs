@@ -5,8 +5,7 @@ extern crate trackable;
 use gp::distributions::MultivariateNormal;
 use gp::matrix::Matrix;
 use gp::vector::ColVec;
-use rand;
-use rand::distributions::Distribution;
+use rand::distr::Distribution;
 use structopt::StructOpt;
 
 #[derive(Debug, StructOpt)]
@@ -28,7 +27,7 @@ fn main() -> trackable::result::TopLevelResult {
     let covariance = Matrix::from_vec(means.len(), means.len(), opt.covariance);
     let mvn = track!(MultivariateNormal::new(means, covariance))?;
 
-    let mut rng = rand::thread_rng();
+    let mut rng = rand::rng();
     for xs in mvn.sample_iter(&mut rng).take(opt.samples) {
         for x in xs.as_slice() {
             print!("{} ", x);

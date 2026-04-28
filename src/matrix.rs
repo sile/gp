@@ -1,6 +1,6 @@
+use crate::Kernel;
 use crate::kernels;
 use crate::vector::ColVec;
-use crate::Kernel;
 use nalgebra::base::dimension::{Dim as _, Dynamic};
 use nalgebra::base::{Matrix as InnerMatrix, VecStorage};
 use nalgebra::linalg::Cholesky;
@@ -23,10 +23,8 @@ impl Matrix {
     {
         let mut covariance = Vec::with_capacity(xs.len() * xs.len());
         for (offset, x0) in xs.iter().enumerate() {
-            for _ in 0..offset {
-                // NOTE: The elements in the upper triangle are ignored
-                covariance.push(0.0);
-            }
+            // NOTE: The elements in the upper triangle are ignored
+            covariance.extend(std::iter::repeat_n(0.0, offset));
             for x1 in xs.iter().skip(offset) {
                 covariance.push(kernel.call(x0, x1));
             }

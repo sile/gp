@@ -1,11 +1,11 @@
+use crate::Result;
 use crate::distributions::MultivariateNormal;
 use crate::kernels::Kernel;
 use crate::matrix::Matrix;
 use crate::means::Mean;
 use crate::vector::ColVec;
-use crate::Result;
-use rand::distributions::Distribution;
 use rand::Rng;
+use rand::distr::Distribution;
 
 #[derive(Debug)]
 pub struct GaussianProcessPrior {

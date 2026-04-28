@@ -1,8 +1,8 @@
 use crate::matrix::Matrix;
 use crate::vector::Vector;
 use crate::{Kernel, Mean};
-use rand::distributions::Distribution;
 use rand::Rng;
+use rand::distr::Distribution;
 use rand_distr;
 
 pub use self::mvn::MultivariateNormal;
@@ -25,7 +25,7 @@ impl Posterior {
         M: Mean<X>,
         K: Kernel<X>,
     {
-        let cov0 = Matrix::covariance(&[x.clone()], xs, &kernel);
+        let cov0 = Matrix::covariance(std::slice::from_ref(x), xs, &kernel);
         let cov1_i = Matrix::covariance(xs, xs, &kernel).inverse()?;
 
         let m0 = mean.mean(x);
@@ -38,7 +38,7 @@ impl Posterior {
         let mean = means.get((0, 0))?;
 
         let cov2 = kernel.kernel(x, x);
-        let cov3 = Matrix::covariance(xs, &[x.clone()], &kernel);
+        let cov3 = Matrix::covariance(xs, std::slice::from_ref(x), &kernel);
         let cov4 = cov0.into_inner() * (cov1_i.into_inner() * cov3.into_inner());
         let variance = cov2 - cov4.get((0, 0))?;
 

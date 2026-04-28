@@ -19,6 +19,10 @@ impl Vector {
         self.inner.len()
     }
 
+    pub fn is_empty(&self) -> bool {
+        self.inner.is_empty()
+    }
+
     pub fn iter<'a>(&'a self) -> impl 'a + Iterator<Item = f64> {
         self.inner.iter().copied()
     }

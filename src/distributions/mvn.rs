@@ -1,8 +1,8 @@
 use crate::matrix::Matrix;
 use crate::vector::ColVec;
 use crate::{ErrorKind, Result};
-use rand::distributions::Distribution;
 use rand::Rng;
+use rand::distr::Distribution;
 use rand_distr::StandardNormal;
 
 /// https://en.wikipedia.org/wiki/Multivariate_normal_distribution#Drawing_values_from_the_distribution

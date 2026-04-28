@@ -5,8 +5,7 @@ extern crate trackable;
 use gp::distributions::GaussianProcessPrior;
 use gp::kernels::GaussianKernel;
 use gp::means::ZERO_MEAN;
-use rand;
-use rand::distributions::Distribution;
+use rand::distr::Distribution;
 use structopt::StructOpt;
 
 #[derive(Debug, StructOpt)]
@@ -25,7 +24,7 @@ fn main() -> trackable::result::TopLevelResult {
     let kernel = GaussianKernel::new(opt.length_scale);
     let prior = track!(GaussianProcessPrior::new(&opt.xs, ZERO_MEAN, kernel))?;
 
-    let mut rng = rand::thread_rng();
+    let mut rng = rand::rng();
     let ys = prior.sample(&mut rng);
     for (x, y) in opt.xs.iter().zip(ys.as_slice().iter()) {
         println!("{} {}", x, y);
