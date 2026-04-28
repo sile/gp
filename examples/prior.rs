@@ -3,27 +3,43 @@ use gp::distributions::GaussianProcessPrior;
 use gp::kernels::GaussianKernel;
 use gp::means::ZERO_MEAN;
 use rand::distr::Distribution;
-use structopt::StructOpt;
 
-#[derive(Debug, StructOpt)]
-#[structopt(rename_all = "kebab-case")]
-struct Opt {
-    #[structopt(long)]
-    xs: Vec<f64>,
+fn main() -> noargs::Result<()> {
+    let mut args = noargs::raw_args();
+    args.metadata_mut().app_name = env!("CARGO_PKG_NAME");
+    args.metadata_mut().app_description = "Sample from a Gaussian process prior";
 
-    #[structopt(long, default_value = "0.1")]
-    length_scale: f64,
-}
+    if noargs::VERSION_FLAG.take(&mut args).is_present() {
+        println!("{} {}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
+        return Ok(());
+    }
+    noargs::HELP_FLAG.take_help(&mut args);
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let opt = Opt::from_args();
+    let length_scale: f64 = noargs::opt("length-scale")
+        .default("0.1")
+        .take(&mut args)
+        .then(|a| a.value().parse())?;
 
-    let kernel = GaussianKernel::new(opt.length_scale);
-    let prior = GaussianProcessPrior::new(&opt.xs, ZERO_MEAN, kernel)?;
+    let mut xs = Vec::new();
+    loop {
+        let opt = noargs::opt("xs").take(&mut args);
+        if !opt.is_present() {
+            break;
+        }
+        xs.push(opt.value().parse::<f64>()?);
+    }
+
+    if let Some(help) = args.finish()? {
+        print!("{help}");
+        return Ok(());
+    }
+
+    let kernel = GaussianKernel::new(length_scale);
+    let prior = GaussianProcessPrior::new(&xs, ZERO_MEAN, kernel)?;
 
     let mut rng = rand::rng();
     let ys = prior.sample(&mut rng);
-    for (x, y) in opt.xs.iter().zip(ys.as_slice().iter()) {
+    for (x, y) in xs.iter().zip(ys.as_slice().iter()) {
         println!("{} {}", x, y);
     }
 

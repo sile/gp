@@ -3,29 +3,52 @@ use gp::distributions::MultivariateNormal;
 use gp::matrix::Matrix;
 use gp::vector::ColVec;
 use rand::distr::Distribution;
-use structopt::StructOpt;
 
-#[derive(Debug, StructOpt)]
-struct Opt {
-    #[structopt(long)]
-    means: Vec<f64>,
+fn main() -> noargs::Result<()> {
+    let mut args = noargs::raw_args();
+    args.metadata_mut().app_name = env!("CARGO_PKG_NAME");
+    args.metadata_mut().app_description = "Sample from a multivariate normal distribution";
 
-    #[structopt(long)]
-    covariance: Vec<f64>,
+    if noargs::VERSION_FLAG.take(&mut args).is_present() {
+        println!("{} {}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
+        return Ok(());
+    }
+    noargs::HELP_FLAG.take_help(&mut args);
 
-    #[structopt(long, default_value = "100")]
-    samples: usize,
-}
+    let samples: usize = noargs::opt("samples")
+        .default("100")
+        .take(&mut args)
+        .then(|a| a.value().parse())?;
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let opt = Opt::from_args();
+    let mut means = Vec::new();
+    loop {
+        let opt = noargs::opt("means").take(&mut args);
+        if !opt.is_present() {
+            break;
+        }
+        means.push(opt.value().parse::<f64>()?);
+    }
 
-    let means = ColVec::from(opt.means);
-    let covariance = Matrix::from_vec(means.len(), means.len(), opt.covariance);
+    let mut covariance = Vec::new();
+    loop {
+        let opt = noargs::opt("covariance").take(&mut args);
+        if !opt.is_present() {
+            break;
+        }
+        covariance.push(opt.value().parse::<f64>()?);
+    }
+
+    if let Some(help) = args.finish()? {
+        print!("{help}");
+        return Ok(());
+    }
+
+    let means = ColVec::from(means);
+    let covariance = Matrix::from_vec(means.len(), means.len(), covariance);
     let mvn = MultivariateNormal::new(means, covariance)?;
 
     let mut rng = rand::rng();
-    for xs in mvn.sample_iter(&mut rng).take(opt.samples) {
+    for xs in mvn.sample_iter(&mut rng).take(samples) {
         for x in xs.as_slice() {
             print!("{} ", x);
         }
